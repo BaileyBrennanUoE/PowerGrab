@@ -1,6 +1,7 @@
 package uk.ac.ed.inf.powergrab;
 
 public class Direction {
+    //Defines constants for each compass point to be used by the Position class
     public static final Direction N = new Direction();
     public static final Direction NNE = new Direction();    
     public static final Direction NE = new Direction();
