@@ -14,6 +14,9 @@ public class App
         Integer pseudoSeed = Integer.parseInt(args[5]);     //seed for the pseudo-random generator
         String droneType = args[6];
         
+        PrintWriter moves = new PrintWriter(droneType + "-" + args[0] + "-" + args[1] + "-" + args[2] + ".txt");
+        PrintWriter map = new PrintWriter(droneType + "-" + args[0] + "-" + args[1] + "-" + args[2] + ".txt");
+        
         URLConnection urlConn = mapURL.openConnection();
         HttpURLConnection conn = (HttpURLConnection) urlConn;
         conn.setReadTimeout(10000); // milliseconds
@@ -29,8 +32,10 @@ public class App
         }
         FeatureCollection fc = FeatureCollection.fromJson(mapSource.toString());
         
-        Game powerGrab = new Game(droneType, startPoint, pseudoSeed, fc);
-        powerGrab.playGame();
+        Game powerGrab = new Game(droneType, startPoint, pseudoSeed, fc, moves, map);
+        //powerGrab.playGame();
+        
+        System.out.println(powerGrab.nearestStation(startPoint).toJson());
     }
     
     
