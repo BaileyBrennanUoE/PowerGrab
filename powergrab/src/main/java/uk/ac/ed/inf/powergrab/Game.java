@@ -1,5 +1,6 @@
 package uk.ac.ed.inf.powergrab;
 import com.mapbox.geojson.*;
+import java.math.*;
 import java.io.*;
 
 public class Game {
@@ -25,7 +26,7 @@ public class Game {
             );
     private int pseudoSeed;
     private PrintWriter movesFile;
-    private PrintWriter mapFile;
+    private PrintWriter flightPath;
     
     Game(String droneType, Position start, int pseudoSeed, FeatureCollection fc, PrintWriter movesFile, PrintWriter mapFile) {
         this.drone = new Drone(droneType);
@@ -34,6 +35,8 @@ public class Game {
         this.fc = fc;
         fc.features().add(lineMap);
         moves = 0;
+        this.movesFile = movesFile;
+        this.flightPath = mapFile;
     }
     
     public String getLineMap() {
@@ -43,13 +46,25 @@ public class Game {
     
     //updates the game state once the drone has performed a move
     public void makeMove(Direction direction) {
+    	Position nextPos = currentPos.nextPosition(direction);
         moves++;    
-        updateMap(currentPos, currentPos.nextPosition(direction), fc);
+        updateMap(currentPos, nextPos, fc);
         if(rangeOfStation(currentPos)) {
             updateDrone(drone, nearestStation(currentPos));
         }
-        
-        currentPos = currentPos.nextPosition(direction);
+        try{
+        	movesFile.println(
+        			currentPos.latitude + ", " + 
+        			currentPos.longitude + ", " + 
+        			direction  + ", " + 
+        			nextPos.latitude  + ", " + 
+        			nextPos.longitude + ", " +
+        			drone.getCoins() + ", " +
+        			drone.getCharge()
+        	);
+        } finally {
+        	currentPos = nextPos;
+        }
     }
     
     public boolean rangeOfStation(Position p) {
@@ -67,13 +82,14 @@ public class Game {
     //finds the nearest station relative to the drone's current position.
     public Feature nearestStation(Position current) {
         Feature nearestFeature = fc.features().get(0);    //sets the first feature in the collection as the nearest one
-        double nearestPoint = distanceAway(current, (Point) fc.features().get(0).geometry());   //finds the distance between the first feature and drone   
+        double nearestPoint = distanceAway(current, (Point) nearestFeature.geometry());   //finds the distance between the first feature and drone   
         
         //finds the closest feature by finding the minimum distance in the collection
         for(int i = 1; i < 49; i++) {
-            double stationDistance = distanceAway(current, (Point) fc.features().get(i).geometry()) ;
+        	Feature stationI = fc.features().get(i);
+            double stationDistance = distanceAway(current, (Point) stationI.geometry()) ;
             if(nearestPoint > stationDistance){
-                nearestFeature = fc.features().get(i);
+                nearestFeature = stationI;
                 nearestPoint = stationDistance;
             }
         }
@@ -82,14 +98,21 @@ public class Game {
     
     //updates the drones charge and coin balance
     public void updateDrone(Drone drone, Feature feature) {
-        drone.updateCoins(feature.getProperty("coins").getAsBigDecimal());
-        drone.updateCharge(feature.getProperty("charge").getAsBigDecimal());
-        updateFeature(feature);
+        BigDecimal coins = feature.getProperty("coins").getAsBigDecimal();
+        BigDecimal charge = feature.getProperty("charge").getAsBigDecimal();
+        BigDecimal droneCoins = new BigDecimal(String.format("%.14f", drone.getCoins()));
+        BigDecimal droneCharge = new BigDecimal(String.format("%.14f", drone.getCharge()));
+        updateFeature(feature, coins, charge, droneCoins, droneCharge);
+        drone.updateCoins(coins);
+        drone.updateCharge(charge);
+        
     }
     
     //updates the feature's properties after the exchange 
-    public void updateFeature(Feature f) {
-        
+    public void updateFeature(Feature f, BigDecimal coins, BigDecimal charge, BigDecimal droneCoins, BigDecimal droneCharge) {
+        if(coins.signum() == -1) {
+            coins = new BigDecimal(Math.min(0, coins.add(droneCoins).doubleValue()));
+        }
     }
     
     //updates the map to show the move just performed by the drone
@@ -101,12 +124,12 @@ public class Game {
     public void playGame() {
         if(drone.getType() == "stateless") {    //runs the stateless drone
             while(moves != 250 || drone.getCharge() > 1.25) {
-                
+                //decide and make moves    
             }
         }
         if(drone.getType() == "stateful") {    //runs the stateful drone
             while(moves != 250 || drone.getCharge() > 1.25) {
-                
+                //decide and make moves    
             }
         }
         endGame();

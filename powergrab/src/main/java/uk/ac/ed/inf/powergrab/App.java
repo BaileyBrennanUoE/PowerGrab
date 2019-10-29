@@ -35,7 +35,7 @@ public class App
         Game powerGrab = new Game(droneType, startPoint, pseudoSeed, fc, moves, map);
         //powerGrab.playGame();
         
-        System.out.println(powerGrab.nearestStation(startPoint).toJson());
+        System.out.println(powerGrab.getLineMap());
     }
     
     
