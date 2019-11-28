@@ -42,6 +42,27 @@ public class Position {
         BigDecimal longi = new BigDecimal(String.format("%.14f", longitude));
         
         //checks the direction the next position is in to determine the calculations needed
+        switch(direction) {
+            case N: return new Position(lati.add(r).doubleValue(), longitude);
+            case NNE: return new Position(lati.add(h2).doubleValue(), longi.add(w2).doubleValue());
+            case NE: return new Position(lati.add(h3).doubleValue(), longi.add(w3).doubleValue());
+            case ENE: return new Position(lati.add(h4).doubleValue(), longi.add(w4).doubleValue());
+            case E: return new Position(latitude, longi.add(r).doubleValue());
+            case ESE: return new Position(lati.subtract(h4).doubleValue(), longi.add(w4).doubleValue());
+            case SE: return new Position(lati.subtract(h3).doubleValue(), longi.add(w3).doubleValue());
+            case SSE: return new Position(lati.subtract(h2).doubleValue(), longi.add(w2).doubleValue());
+            case S: return new Position(lati.subtract(r).doubleValue(), longitude);
+            case SSW: return new Position(lati.subtract(h2).doubleValue(), longi.subtract(w2).doubleValue());
+            case SW: return new Position(lati.subtract(h3).doubleValue(), longi.subtract(w3).doubleValue());
+            case WSW: return new Position(lati.subtract(h4).doubleValue(), longi.subtract(w4).doubleValue());
+            case W: return new Position(latitude, longi.subtract(r).doubleValue());
+            case WNW: return new Position(lati.add(h4).doubleValue(), longi.subtract(w4).doubleValue());
+            case NW: return new Position(lati.add(h3).doubleValue(), longi.subtract(w3).doubleValue());
+            case NNW: return new Position(lati.add(h2).doubleValue(), longi.subtract(w2).doubleValue());
+            default: return new Position(latitude, longitude);
+        }
+        
+        /*
         if(direction == Direction.N) {
             return new Position(lati.add(r).doubleValue(), longitude);
         }
@@ -91,6 +112,7 @@ public class Position {
             return new Position(lati.add(h4).doubleValue(), longi.subtract(w4).doubleValue());
         }
         return new Position(latitude, longitude);
+        */
     }
     
     public boolean inPlayArea() {

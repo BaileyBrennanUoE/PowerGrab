@@ -14,8 +14,8 @@ public class App
         Integer pseudoSeed = Integer.parseInt(args[5]);     //seed for the pseudo-random generator
         String droneType = args[6];
         
-        PrintWriter moves = new PrintWriter(droneType + "-" + args[0] + "-" + args[1] + "-" + args[2] + ".txt");
-        PrintWriter map = new PrintWriter(droneType + "-" + args[0] + "-" + args[1] + "-" + args[2] + ".txt");
+        PrintWriter movesFile = new PrintWriter(droneType + "-" + args[0] + "-" + args[1] + "-" + args[2] + ".txt");
+        PrintWriter mapFile = new PrintWriter(droneType + "-" + args[0] + "-" + args[1] + "-" + args[2] + ".geojson");
         
         URLConnection urlConn = mapURL.openConnection();
         HttpURLConnection conn = (HttpURLConnection) urlConn;
@@ -32,10 +32,13 @@ public class App
         }
         FeatureCollection fc = FeatureCollection.fromJson(mapSource.toString());
         
-        Game powerGrab = new Game(droneType, startPoint, pseudoSeed, fc, moves, map);
-        //powerGrab.playGame();
+        Game powerGrab = new Game(droneType, startPoint, pseudoSeed, fc, movesFile, mapFile);
+        long startTime = System.currentTimeMillis();
+        powerGrab.playGame();
+        long endTime = System.currentTimeMillis();
+        System.out.println("Total execution time for game: " + (endTime-startTime) + "ms");
         
-        System.out.println(powerGrab.getLineMap());
+        //System.out.println(fc.features().get(0).getProperty("id"));
     }
     
     
