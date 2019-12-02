@@ -8,28 +8,28 @@ public class Position {
     
     //BigDecimal is used to ensure precision while carrying out the calculations.
     //constant r defines the set distance each move travels   
-    public static final BigDecimal r = new BigDecimal(0.0003);
+    static final BigDecimal r = new BigDecimal(0.0003);
     
     public double convertToRadians(double angle) {
         return (angle*Math.PI)/180;
     }
     
     //variables for the trigonometric equations
-    public BigDecimal cos675 = new BigDecimal(String.format("%.10f", Math.cos(convertToRadians(67.5))));
-    public BigDecimal cos45 = new BigDecimal(String.format("%.10f", Math.cos(convertToRadians(45))));
-    public BigDecimal cos225 = new BigDecimal(String.format("%.10f", Math.cos(convertToRadians(22.5))));
-    public BigDecimal sin675 = new BigDecimal(String.format("%.10f", Math.sin(convertToRadians(67.5))));
-    public BigDecimal sin45 = new BigDecimal(String.format("%.10f", Math.sin(convertToRadians(45))));
-    public BigDecimal sin225 = new BigDecimal(String.format("%.10f", Math.sin(convertToRadians(22.5))));
+    BigDecimal cos675 = new BigDecimal(String.format("%.10f", Math.cos(convertToRadians(67.5))));
+    BigDecimal cos45 = new BigDecimal(String.format("%.10f", Math.cos(convertToRadians(45))));
+    BigDecimal cos225 = new BigDecimal(String.format("%.10f", Math.cos(convertToRadians(22.5))));
+    BigDecimal sin675 = new BigDecimal(String.format("%.10f", Math.sin(convertToRadians(67.5))));
+    BigDecimal sin45 = new BigDecimal(String.format("%.10f", Math.sin(convertToRadians(45))));
+    BigDecimal sin225 = new BigDecimal(String.format("%.10f", Math.sin(convertToRadians(22.5))));
     
     //variables used to determine width of plane
-    public BigDecimal w2 = r.multiply(cos675);
-    public BigDecimal w3 = r.multiply(cos45);
-    public BigDecimal w4 = r.multiply(cos225);
+    BigDecimal w2 = r.multiply(cos675);
+    BigDecimal w3 = r.multiply(cos45);
+    BigDecimal w4 = r.multiply(cos225);
     //variables used to determine height of plane
-    public BigDecimal h2 = r.multiply(sin675);
-    public BigDecimal h3 = r.multiply(sin45);
-    public BigDecimal h4 = r.multiply(sin225);
+    BigDecimal h2 = r.multiply(sin675);
+    BigDecimal h3 = r.multiply(sin45);
+    BigDecimal h4 = r.multiply(sin225);
     
     public Position(double latitude, double longitude) {
         this.latitude = latitude;
